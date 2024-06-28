@@ -24,6 +24,8 @@ app.use("/api/expenses", require("./routes/expenses"));
 app.use("/api/quizzes", require("./routes/quizzes"));
 app.use("/api/challenges", require("./routes/challenges"));
 app.use("/api/quotes", require("./routes/quotes"));
+app.use("/api/achievements", require("./routes/achievements"));
+app.use("/api/leaderboards", require("./routes/leaderboards"));
 
 // Logout route (doesn't require server-side logic, handled on client-side)
 app.post("/api/logout", (req, res) => {
