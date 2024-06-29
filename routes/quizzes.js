@@ -11,10 +11,20 @@ router.get("/", auth, async (req, res) => {
     const user = await User.findById(req.user.id);
     const today = new Date().setHours(0, 0, 0, 0);
 
-    // Temporarily disable the 24-hour limit for testing
-    // if (user.lastQuizDate && user.lastQuizDate.setHours(0, 0, 0, 0) === today) {
-    //   return res.status(400).json({ msg: "You've already taken a quiz today. Come back tomorrow!" });
-    // }
+    if (user.lastQuizDate && user.lastQuizDate.setHours(0, 0, 0, 0) === today) {
+      const nextQuizTime = new Date(today + 24 * 60 * 60 * 1000);
+      const hoursUntilNextQuiz = Math.round((nextQuizTime - new Date()) / (60 * 60 * 1000));
+
+      return res.status(200).json({
+        quizAvailable: false,
+        message: "Great job on today's quiz!",
+        nextQuizTime: nextQuizTime.toISOString(),
+        hoursUntilNextQuiz,
+        dailyStreak: user.dailyStreak,
+        encouragement: "Keep up the great work! Your financial knowledge is growing every day.",
+        tip: "While you wait, why not review your savings goals or check out some financial tips?",
+      });
+    }
 
     let ageGroup;
     if (user.age < 15) ageGroup = "under15";
@@ -23,7 +33,7 @@ router.get("/", auth, async (req, res) => {
 
     const quizzes = await Quiz.find({ ageGroup });
     const randomQuiz = quizzes[Math.floor(Math.random() * quizzes.length)];
-    res.json(randomQuiz);
+    res.json({ quizAvailable: true, quiz: randomQuiz });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

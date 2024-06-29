@@ -6,6 +6,7 @@ const ChallengeSchema = new mongoose.Schema({
   targetAmount: { type: Number, required: true },
   currentAmount: { type: Number, default: 0 },
   completed: { type: Boolean, default: false },
+  visualType: { type: String, enum: ['tree', 'gullak'], default: 'tree' },
 });
 
 module.exports = mongoose.model("Challenge", ChallengeSchema);
