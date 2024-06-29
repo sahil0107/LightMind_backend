@@ -55,24 +55,6 @@ router.put("/:id", auth, async (req, res) => {
   }
 });
 
-// // Delete a challenge
-// router.delete("/:id", auth, async (req, res) => {
-//   try {
-//     const challenge = await Challenge.findById(req.params.id);
-//     if (!challenge) {
-//       return res.status(404).json({ msg: "Challenge not found" });
-//     }
-//     if (challenge.user.toString() !== req.user.id) {
-//       return res.status(401).json({ msg: "User not authorized" });
-//     }
-//     await challenge.remove();
-//     res.json({ msg: "Challenge removed" });
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send("Server error");
-//   }
-// });
-// Delete a challenge
 router.delete("/:id", auth, async (req, res) => {
   try {
     const challenge = await Challenge.findById(req.params.id);
