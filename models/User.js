@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema({
   dailyStreak: { type: Number, default: 0 },
   lastQuizDate: { type: Date },
   netWorth: { type: Number, default: 0 },
+  achievements: [String],
 });
 
 module.exports = mongoose.model("User", UserSchema);

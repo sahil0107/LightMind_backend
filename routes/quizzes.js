@@ -8,6 +8,12 @@ const User = require("../models/User");
 router.get("/", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
+    const today = new Date().setHours(0, 0, 0, 0);
+
+    if (user.lastQuizDate && user.lastQuizDate.setHours(0, 0, 0, 0) === today) {
+      return res.status(400).json({ msg: "You've already taken a quiz today. Come back tomorrow!" });
+    }
+
     let ageGroup;
     if (user.age < 15) ageGroup = "under15";
     else if (user.age >= 15 && user.age <= 22) ageGroup = "15to22";
