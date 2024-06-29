@@ -77,10 +77,13 @@ router.post("/login", async (req, res) => {
 router.get("/profile", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
+    console.log('User profile fetched:', user);
     res.json({
+      name: user.name,
       coins: user.coins,
       dailyStreak: user.dailyStreak,
       achievements: user.achievements,
+      avatar: user.avatar,
     });
   } catch (err) {
     console.error(err.message);
