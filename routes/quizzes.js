@@ -13,7 +13,9 @@ router.get("/", auth, async (req, res) => {
 
     if (user.lastQuizDate && user.lastQuizDate.setHours(0, 0, 0, 0) === today) {
       const nextQuizTime = new Date(today + 24 * 60 * 60 * 1000);
-      const hoursUntilNextQuiz = Math.round((nextQuizTime - new Date()) / (60 * 60 * 1000));
+      const hoursUntilNextQuiz = Math.round(
+        (nextQuizTime - new Date()) / (60 * 60 * 1000)
+      );
 
       return res.status(200).json({
         quizAvailable: false,
@@ -21,7 +23,8 @@ router.get("/", auth, async (req, res) => {
         nextQuizTime: nextQuizTime.toISOString(),
         hoursUntilNextQuiz,
         dailyStreak: user.dailyStreak,
-        encouragement: "Keep up the great work! Your financial knowledge is growing every day.",
+        encouragement:
+          "Keep up the great work! Your financial knowledge is growing every day.",
         tip: "While you wait, why not review your savings goals or check out some financial tips?",
       });
     }
@@ -31,8 +34,10 @@ router.get("/", auth, async (req, res) => {
     else if (user.age >= 15 && user.age <= 22) ageGroup = "15to22";
     else ageGroup = "above22";
 
-    const quizzes = await Quiz.find({ ageGroup });
+    const quizzes = await Quiz.find({ ageGroup }); // array of objects
+    console.log("quizzes", quizzes);
     const randomQuiz = quizzes[Math.floor(Math.random() * quizzes.length)];
+    console.log("randomQuiz", randomQuiz);
     res.json({ quizAvailable: true, quiz: randomQuiz });
   } catch (err) {
     console.error(err.message);
@@ -58,7 +63,7 @@ router.post("/submit", auth, async (req, res) => {
     const coinsEarned = Math.floor(score * (1 + user.dailyStreak * 0.1));
 
     user.coins += coinsEarned;
-    await user.save();  // This will trigger the pre-save hook and update the avatar
+    await user.save(); // This will trigger the pre-save hook and update the avatar
 
     const today = new Date().setHours(0, 0, 0, 0);
     if (user.lastQuizDate && user.lastQuizDate.setHours(0, 0, 0, 0) === today) {

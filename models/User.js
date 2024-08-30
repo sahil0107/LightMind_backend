@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { getAvatarByCoins } = require("../utils/avatarUtils");
-
+//ok
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -14,8 +14,8 @@ const UserSchema = new mongoose.Schema({
   avatar: { type: String, default: "avatar1.jpeg" },
 });
 
-UserSchema.pre('save', async function(next) {
-  if (this.isModified('coins')) {
+UserSchema.pre("save", async function (next) {
+  if (this.isModified("coins")) {
     this.avatar = getAvatarByCoins(this.coins);
   }
   next();

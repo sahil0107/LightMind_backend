@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+//ok
 const QuizSchema = new mongoose.Schema({
   ageGroup: {
     type: String,

@@ -7,3 +7,4 @@ const getAvatarByCoins = (coins) => {
 };
 
 module.exports = { getAvatarByCoins };
+//

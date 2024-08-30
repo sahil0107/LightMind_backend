@@ -1,4 +1,3 @@
-
 const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
@@ -8,7 +7,9 @@ const User = require("../models/User");
 // Get all expenses for a user
 router.get("/", auth, async (req, res) => {
   try {
-    const expenses = await Expense.find({ user: req.user.id }).sort({ date: -1 });
+    const expenses = await Expense.find({ user: req.user.id }).sort({
+      date: -1,
+    });
     res.json(expenses);
   } catch (err) {
     console.error(err.message);
@@ -27,10 +28,12 @@ router.post("/", auth, async (req, res) => {
       description,
     });
     const expense = await newExpense.save();
+    console.log(expense);
 
     // Update user's net worth
     const user = await User.findById(req.user.id);
-    const amountChange = type === "income" ? parseFloat(amount) : -parseFloat(amount);
+    const amountChange =
+      type === "income" ? parseFloat(amount) : -parseFloat(amount);
     user.netWorth = parseFloat(user.netWorth) + amountChange;
     await user.save();
 
@@ -41,53 +44,53 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-// Update an expense
-router.put("/:id", auth, async (req, res) => {
-  const { amount, type, description } = req.body;
+// // Update an expense
+// router.put("/:id", auth, async (req, res) => {
+//   const { amount, type, description } = req.body;
 
-  try {
-    let expense = await Expense.findById(req.params.id);
+//   try {
+//     let expense = await Expense.findById(req.params.id);
 
-    if (!expense) return res.status(404).json({ msg: "Expense not found" });
+//     if (!expense) return res.status(404).json({ msg: "Expense not found" });
 
-    // Make sure user owns expense
-    if (expense.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "Not authorized" });
-    }
+//     // Make sure user owns expense
+//     if (expense.user.toString() !== req.user.id) {
+//       return res.status(401).json({ msg: "Not authorized" });
+//     }
 
-    expense = await Expense.findByIdAndUpdate(
-      req.params.id,
-      { $set: { amount, type, description } },
-      { new: true }
-    );
+//     expense = await Expense.findByIdAndUpdate(
+//       req.params.id,
+//       { $set: { amount, type, description } },
+//       { new: true }
+//     );
 
-    res.json(expense);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
+//     res.json(expense);
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send("Server error");
+//   }
+// });
 
-// Delete an expense
-router.delete("/:id", auth, async (req, res) => {
-  try {
-    let expense = await Expense.findById(req.params.id);
+// // Delete an expense
+// router.delete("/:id", auth, async (req, res) => {
+//   try {
+//     let expense = await Expense.findById(req.params.id);
 
-    if (!expense) return res.status(404).json({ msg: "Expense not found" });
+//     if (!expense) return res.status(404).json({ msg: "Expense not found" });
 
-    // Make sure user owns expense
-    if (expense.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "Not authorized" });
-    }
+//     // Make sure user owns expense
+//     if (expense.user.toString() !== req.user.id) {
+//       return res.status(401).json({ msg: "Not authorized" });
+//     }
 
-    await Expense.findByIdAndRemove(req.params.id);
+//     await Expense.findByIdAndRemove(req.params.id);
 
-    res.json({ msg: "Expense removed" });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
+//     res.json({ msg: "Expense removed" });
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send("Server error");
+//   }
+// });
 
 // Get user's net worth
 router.get("/net-worth", auth, async (req, res) => {
